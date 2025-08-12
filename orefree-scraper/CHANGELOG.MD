@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-08-12 - v0.0.12 
+Added README.md
+
 ## 2025-08-12 - v0.0.11 
 Added all architectures
 
