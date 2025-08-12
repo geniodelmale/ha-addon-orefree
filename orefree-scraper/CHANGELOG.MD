@@ -1,6 +1,6 @@
 # Changelog
 
-## 2025-08-12 - v0.0.12 
+## 2025-08-12 - v0.0.13 
 Added input_boolean_entity and switch_entity as optional query parameters to be used when type=timeslot
 
 { "timeslots":[{ "start": "4:00", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "INPUT_BOOLEAN_ENTITY" }] }, { "start": "7:00", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "INPUT_BOOLEAN_ENTITY" }] }], "entity_id": "SWITCH_ENTITY"}
