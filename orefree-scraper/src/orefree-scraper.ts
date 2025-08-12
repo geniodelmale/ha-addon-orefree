@@ -17,8 +17,7 @@ export async function OreFreeScraper(
 
 
   return {
-    async fetchHours(type: 'time' | 'timeslot') {
-
+    async fetchHours(type: 'time' | 'timeslot', inputBooleanEntity: string, switchEntity: string) {
       var jsonOreFree = '';
       try {
         await page.goto(URL_TOP_PAGE);
@@ -68,7 +67,7 @@ export async function OreFreeScraper(
           let startTime = words[0].replace('24:00', '00:01');
           let endTime = words[2].replace('24:00', '23:59');
 
-          jsonOreFree = '{ "timeslots":[{ "start": "' + startTime + '", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "' + endTime + '", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}';
+          jsonOreFree = '{ "timeslots":[{ "start": "' + startTime + '", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "' + inputBooleanEntity + '" }] }, { "start": "' + endTime + '", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "' + inputBooleanEntity + '" }] }], "entity_id": "' + switchEntity + '"}';
         }
         logger.info('Fetched free hours: ' + jsonOreFree);
       } catch (error) {

@@ -31,6 +31,8 @@ fastify.get(
           username: { type: 'string' },
           password: { type: 'string' },
           type: { type: 'string', enum: ['time', 'timeslot'] },
+          input_boolean_entity: { type: 'string' },
+          switch_entity: { type: 'string' },
         },
         required: ['username', 'password', 'type'],
       },
@@ -39,8 +41,16 @@ fastify.get(
   async (req, res) => {
     const { username, password, type } = req.query as { username: string; password: string; type: 'time' | 'timeslot'; };
 
+    let inputBooleanEntity = '';
+    let switchEntity = '';
+    if (type === 'timeslot') {
+      const { input_boolean_entity, switch_entity } = req.query as { input_boolean_entity: string; switch_entity: string; };
+      inputBooleanEntity = input_boolean_entity;
+      switchEntity = switch_entity;
+    }
+
     const scraper = await OreFreeScraper(username, password, fastify.log);
-    return scraper.fetchHours(type);
+    return scraper.fetchHours(type, inputBooleanEntity, switchEntity);
   },
 );
 
