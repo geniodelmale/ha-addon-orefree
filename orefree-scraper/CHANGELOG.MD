@@ -1,3 +1,5 @@
+2025-08-12 - v0.0.9 - fixed CHANGELOG.MD
+
 2025-08-12 - v0.0.8 - added type selection in querystring:
                             - type=time returns time like 4:00 - 7:00
                             - type=timeslot returns json in the format
