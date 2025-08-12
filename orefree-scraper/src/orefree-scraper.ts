@@ -107,7 +107,7 @@ export async function OreFreeScraper(
         await page.getByPlaceholder('Password').click();
         await page.getByPlaceholder('Password').fill(password);
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
-        logger.info('Submitted login credentials');
+        logger.info('Submitted login credentials ' + username + ' - ' + password);
 
         try {
             await page.getByRole('button', { name: 'chiudi modale' }).click();
@@ -127,7 +127,7 @@ export async function OreFreeScraper(
 
         jsonOreFree = '{ "timeslots":[{ "start": "' + startTime + '", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "' + endTime + '", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}';
       } catch (error) {
-        logger.error('Error occurred while fetching free hours:', error);
+        logger.error('Error occurred while fetching free hours: ' + error);
       }
 
     await browser.close();
