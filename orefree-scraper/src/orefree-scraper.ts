@@ -96,7 +96,7 @@ export async function OreFreeScraper(
       var jsonOreFree = '';
       try {
         await page.goto('https://www.enel.it/it/area-clienti/residenziale');
-        logger
+        logger.info('Navigated to Enel residential area');
 
         try {
             await page.getByRole('button', { name: 'Continua senza accettare' }).click();
@@ -107,14 +107,14 @@ export async function OreFreeScraper(
         await page.getByPlaceholder('Password').click();
         await page.getByPlaceholder('Password').fill(password);
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
-        logger
+        logger.info('Submitted login credentials');
 
         try {
             await page.getByRole('button', { name: 'chiudi modale' }).click();
         } catch (error) { }
 
         await page.getByText('Gestisci le ore free').click();
-        logger
+        logger.info('Navigated to Manage Free Hours');
 
         await page.waitForTimeout(3000);
 
