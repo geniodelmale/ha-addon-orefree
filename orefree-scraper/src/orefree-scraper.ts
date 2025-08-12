@@ -1,5 +1,5 @@
 import playwright from 'playwright';
-import { URL_DASHBOARD, URL_ELECTRICITY_USAGE, URL_LOGIN, URL_TOP_PAGE } from './constant';
+import { RETRIES, URL_TOP_PAGE } from './constant';
 import { Logger, Usage } from './types';
 
 export async function OreFreeScraper(
@@ -95,7 +95,7 @@ export async function OreFreeScraper(
 
       var jsonOreFree = '';
       try {
-        await page.goto('https://www.enel.it/it/area-clienti/residenziale');
+        await page.goto(URL_TOP_PAGE);
         logger.info('Navigated to Enel residential area');
 
         try {
@@ -120,12 +120,12 @@ export async function OreFreeScraper(
         await page.waitForTimeout(3000);
 
         let scrapedFreeHours = '';
-        for (let attempt = 0; attempt < 3; attempt++) {
+        for (let attempt = 0; attempt < RETRIES; attempt++) {
           scrapedFreeHours = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
           if (scrapedFreeHours.trim() !== '') {
             break;
           }
-          logger.info("Scraped Free Hours: " + scrapedFreeHours);
+          logger.info("Reading Scraped Free Hours: Retry n." + attempt);
           await page.waitForTimeout(1000);
         }
 
@@ -133,7 +133,7 @@ export async function OreFreeScraper(
          logger.info("Hours: " + scrapedFreeHours);
 
         if (scrapedFreeHours.trim() === '') {
-          throw new Error('Failed to retrieve the page title after multiple attempts');
+          throw new Error('Failed to retrieve the scraped free hours after multiple attempts');
         }
 
         const words = scrapedFreeHours.split(' ');
