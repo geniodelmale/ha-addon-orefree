@@ -1,3 +1,5 @@
+2025-08-12 - v0.0.10 - fixed CHANGELOG.md
+
 2025-08-12 - v0.0.9 - fixed CHANGELOG.MD
 
 2025-08-12 - v0.0.8 - added type selection in querystring:
