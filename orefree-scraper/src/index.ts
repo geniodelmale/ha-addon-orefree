@@ -17,34 +17,9 @@ const fastify = Fastify({
   },
 });
 
-// fastify.post(
-//   '/login',
-//   {
-//     schema: {
-//       body: {
-//         type: 'object',
-//         properties: {
-//           username: { type: 'string' },
-//           password: { type: 'string' },
-//           customerNumber: { type: 'string' },
-//         },
-//         required: ['username', 'password', 'customerNumber'],
-//       },
-//     },
-//   },
-//   async (req, res) => {
-//     const { username, password, customerNumber } = req.body as { username: string; password: string; customerNumber: string  };
-
-//     const scraper = await OreFreeScraper(username, password, customerNumber, fastify.log);
-//     const result = await scraper.verifyCredentials();
-
-//     if (!result) {
-//       return res.status(401).send();
-//     }
-
-//     return res.status(204).send();
-//   }
-// )
+fastify.get('/', async (req, res) => {
+  return { message: 'OreFree Scraper is running!' };
+});
 
 fastify.get(
   '/fetchHours',

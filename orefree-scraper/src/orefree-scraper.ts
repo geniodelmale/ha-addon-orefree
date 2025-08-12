@@ -15,82 +15,8 @@ export async function OreFreeScraper(
   const context= await browser.newContext();
   const page = await context.newPage();
 
-  //async function spyOnGraphqlResponse(key: string) {
-  //   return page.waitForResponse(async response => {
-  //     if (!/graphql$/.test(response.url())) {
-  //       return false;
-  //     }
-
-  //     const body = await response.json();
-  //     return 'data' in body && key in body.data;
-  //   });
-  // }
-
-  // async function login() {
-  //   await page.goto(URL_TOP_PAGE);
-  //   await page.getByRole('link', { name: 'ログイン', exact: false }).first().click();
-  //   logger.info('Clicked login button');
-
-  //   await page.waitForURL(URL_LOGIN);
-  //   await page.fill('input#loginId', username);
-  //   await page.fill('input#password', password);
-  //   await page.click('#submit-btn');
-  //   logger.info('Submitted credentials');
-  // }
-
-  // async function navigateToHourlyElectricityUsage() {
-  //   await page.goto(URL_ELECTRICITY_USAGE);
-  //   logger.info('Navigated to Electricity Usage Page');
-  // }
-
-  // async function interceptElectricityUsageResponse(date: string): Promise<Usage[]> {
-  //   const isHourlyElectricityUsage = (postData: { operationName: string }): postData is {
-  //     operationName: 'HourlyElectricityUsage';
-  //     variables: {
-  //       targetDate: string | null;
-  //     }
-  //   } => postData.operationName === 'HourlyElectricityUsage';
-
-  //   // intercept request and response
-  //   await page.route(/graphql$/, async (route) => {
-  //     // postData will not be null if it's /graphql
-  //     const postData = JSON.parse(route.request().postData()!) as { operationName: string };
-
-  //     if (!isHourlyElectricityUsage(postData)) {
-  //       await route.continue();
-  //       return
-  //     }
-
-  //     postData.variables.targetDate = date;
-  //     await route.continue({ postData });
-  //   })
-  //   const responsePromise = spyOnGraphqlResponse('hourlyElectricityUsage');
-  //   logger.info('Set interceptor for request and response');
-
-  //   // clicking 'Hour' trigger the graphql API
-  //   await page.getByRole('button', { name: '時間' }).click();
-
-  //   // get the intercepted response body
-  //   const response = await responsePromise;
-  //   const body = await response.json() as { data: { hourlyElectricityUsage: any[] }};
-
-  //   return body.data.hourlyElectricityUsage;
-  // }
 
   return {
-  //   async verifyCredentials() {
-  //     await login();
-
-  //     const result = await Promise.race([
-  //       page.waitForURL(URL_DASHBOARD),
-  //       page.waitForSelector('text="「ログインID」もしくは「パスワード」が正しくありません。"'),
-  //     ]);
-
-  //     await browser.close();
-  //     logger.info('Closed browser');
-
-  //     return !result; // waitForUrl return nothing if it succeeds
-  //   },
     async fetchHours() {
 
       var jsonOreFree = '';
@@ -129,7 +55,6 @@ export async function OreFreeScraper(
           await page.waitForTimeout(1000);
         }
 
-        // const pageTitle = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
          logger.info("Hours: " + scrapedFreeHours);
 
         if (scrapedFreeHours.trim() === '') {
@@ -137,8 +62,8 @@ export async function OreFreeScraper(
         }
 
         const words = scrapedFreeHours.split(' ');
-        let startTime = words[0]; //.replace('24:00', '00:01');
-        let endTime = words[2]; //.replace('24:00', '23:59');
+        let startTime = words[0].replace('24:00', '00:01');
+        let endTime = words[2].replace('24:00', '23:59');
 
         jsonOreFree = '{ "timeslots":[{ "start": "' + startTime + '", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "' + endTime + '", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}';
       } catch (error) {

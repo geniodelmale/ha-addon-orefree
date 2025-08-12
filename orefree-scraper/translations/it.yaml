@@ -1,0 +1,9 @@
+network:
+  8000/tcp: La porta su cui il server ascolta
+configuration:
+  port:
+    name: Port
+    description: La porta su cui il server ascolta. Inserisci lo stesso valore della Porta di Rete.
+  log_level:
+    name: Log Level
+    description: Log level da usare per il server
