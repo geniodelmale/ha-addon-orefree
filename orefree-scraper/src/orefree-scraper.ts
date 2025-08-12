@@ -119,9 +119,24 @@ export async function OreFreeScraper(
 
         await page.waitForTimeout(3000);
 
-        const pageTitle = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
-        logger.info("Hours: " + pageTitle);
-        const words = pageTitle.split(' ');
+        let scrapedFreeHours = '';
+        for (let attempt = 0; attempt < 3; attempt++) {
+          scrapedFreeHours = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
+          if (scrapedFreeHours.trim() !== '') {
+            break;
+          }
+          logger.info("Scraped Free Hours: " + scrapedFreeHours);
+          await page.waitForTimeout(1000);
+        }
+
+        // const pageTitle = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
+         logger.info("Hours: " + scrapedFreeHours);
+
+        if (scrapedFreeHours.trim() === '') {
+          throw new Error('Failed to retrieve the page title after multiple attempts');
+        }
+
+        const words = scrapedFreeHours.split(' ');
         let startTime = words[0]; //.replace('24:00', '00:01');
         let endTime = words[2]; //.replace('24:00', '23:59');
 
