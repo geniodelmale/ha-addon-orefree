@@ -111,7 +111,8 @@ export async function OreFreeScraper(
 
         try {
             await page.getByRole('button', { name: 'chiudi modale' }).click();
-        } catch (error) { }
+        } catch (error) { logger.error('No modal to close', error); }
+        logger.info('Closed any modal if present');
 
         await page.getByText('Gestisci le ore free').click();
         logger.info('Navigated to Manage Free Hours');
