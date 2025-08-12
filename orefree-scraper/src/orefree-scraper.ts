@@ -17,7 +17,7 @@ export async function OreFreeScraper(
 
 
   return {
-    async fetchHours() {
+    async fetchHours(type: 'time' | 'timeslot') {
 
       var jsonOreFree = '';
       try {
@@ -61,11 +61,16 @@ export async function OreFreeScraper(
           throw new Error('Failed to retrieve the scraped free hours after multiple attempts');
         }
 
-        const words = scrapedFreeHours.split(' ');
-        let startTime = words[0].replace('24:00', '00:01');
-        let endTime = words[2].replace('24:00', '23:59');
+        if (type === 'time') {
+          jsonOreFree=scrapedFreeHours;
+        } else {
+          const words = scrapedFreeHours.split(' ');
+          let startTime = words[0].replace('24:00', '00:01');
+          let endTime = words[2].replace('24:00', '23:59');
 
-        jsonOreFree = '{ "timeslots":[{ "start": "' + startTime + '", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "' + endTime + '", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}';
+          jsonOreFree = '{ "timeslots":[{ "start": "' + startTime + '", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "' + endTime + '", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}';
+        }
+        logger.info('Fetched free hours: ' + jsonOreFree);
       } catch (error) {
         logger.error('Error occurred while fetching free hours: ' + error);
       }

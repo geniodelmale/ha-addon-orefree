@@ -30,16 +30,17 @@ fastify.get(
         properties: {
           username: { type: 'string' },
           password: { type: 'string' },
+          type: { type: 'string', enum: ['time', 'timeslot'] },
         },
-        required: ['username', 'password'],
+        required: ['username', 'password', 'type'],
       },
     },
   },
   async (req, res) => {
-    const { username, password} = req.query as { username: string; password: string; };
+    const { username, password, type } = req.query as { username: string; password: string; type: 'time' | 'timeslot'; };
 
     const scraper = await OreFreeScraper(username, password, fastify.log);
-    return scraper.fetchHours();
+    return scraper.fetchHours(type);
   },
 );
 
