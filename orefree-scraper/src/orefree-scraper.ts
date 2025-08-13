@@ -35,8 +35,7 @@ export async function OreFreeScraper(
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
         logger.info('Submitted login credentials ' + username + ' - ' + password);
 
-        const invalidCredentialsText = 'Le credenziali che hai fornito non sono corrette.';
-        const isInvalidCredentials = await page.locator(`text=${invalidCredentialsText}`).isVisible();
+        const isInvalidCredentials =  await page.locator('#loginError').isVisible();
         if (isInvalidCredentials) {
           logger.error('Invalid credentials detected.');
           throw new Error('Invalid credentials detected.');

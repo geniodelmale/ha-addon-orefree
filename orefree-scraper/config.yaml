@@ -1,6 +1,6 @@
 name: OreFree Scraper
 description: Login to OreFree and scrape current hours
-version: 0.0.16
+version: 0.0.17
 slug: ore_free_scraper
 init: false
 arch:
