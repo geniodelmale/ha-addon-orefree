@@ -35,7 +35,7 @@ export async function OreFreeScraper(
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
         logger.info('Submitted login credentials ' + username + ' - ' + password);
 
-        for (let attempt = 0; attempt < 3; attempt++) {
+        for (let attempt = 0; attempt < 1; attempt++) {
           try {
               await page.getByRole('button', { name: 'chiudi modale' }).click();
               break;
