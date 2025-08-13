@@ -75,8 +75,8 @@ export async function OreFreeScraper(
         }
 
         if (type === 'time') {
-          jsonOreFree=scrapedFreeHours;
-          jsonOreFree='21:00 - 24:00';
+          jsonOreFree=scrapedFreeHours.replace('24:00', '23:59');
+          jsonOreFree='21:00 - 23:59';
         } else {
           const words = scrapedFreeHours.split(' ');
           let startTime = words[0]; //.replace('24:00', '00:01');
