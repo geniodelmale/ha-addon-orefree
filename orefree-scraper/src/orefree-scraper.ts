@@ -35,6 +35,14 @@ export async function OreFreeScraper(
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
         logger.info('Submitted login credentials ' + username + ' - ' + password);
 
+        await page.waitForURL('**/*');
+
+        const currentUrl = page.url();
+        if (currentUrl.includes('autherror=true')) {
+          logger.error('Login error detected.');
+          throw new Error('Login error detected.');
+        }
+
         for (let attempt = 0; attempt < 1; attempt++) {
           try {
               await page.getByRole('button', { name: 'chiudi modale' }).click();
@@ -42,11 +50,6 @@ export async function OreFreeScraper(
           } catch (error) { logger.error('No modal to close. Attempt: ' + attempt, error); }
         }
 
-        const isInvalidCredentials =  await page.locator('#loginError').isVisible();
-        if (isInvalidCredentials) {
-          logger.error('Invalid credentials detected.');
-          throw new Error('Invalid credentials detected.');
-        }
 
         logger.info('Closed any modal if present');
 
