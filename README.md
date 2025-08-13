@@ -3,7 +3,8 @@
 
 ([Based on TokyoGas Scraper for Home Assistant](https://github.com/hlchanad/ha-tokyo-gas/))
 
-Custom add-on to scrape OreFree daily hours from Enel website.
+Custom add-on to scrape OreFree daily hours from Ore Free website.
+Can be used together with [Home Assistant OreFree Custom Integration](https://github.com/geniodelmale/ha-custcomp-orefree).
 
 > [!WARNING]
 > This is still **under construction**. It might be unstable and use it on your
@@ -29,7 +30,7 @@ Send a GET request to http://homeassistant.local:8000?username=YOUR_USERNAME&pas
 
 TYPE can be:
 - time to retrieve hours in the format 4:00 - 7:00
-- timeslot to retrieve json data:
+- timeslot to retrieve json data  --- DEPRECATED--- :
     { "timeslots":[{ "start": "4:00", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "7:00", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}
 
 ## Known Issues
