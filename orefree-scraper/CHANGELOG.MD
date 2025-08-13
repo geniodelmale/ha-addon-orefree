@@ -1,5 +1,8 @@
 # Changelog
 
+## 2025-08-12 - v0.0.14
+Added attempt when trying to close modal
+
 ## 2025-08-12 - v0.0.13 
 Added input_boolean_entity and switch_entity as optional query parameters to be used when type=timeslot
 

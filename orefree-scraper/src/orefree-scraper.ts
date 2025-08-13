@@ -26,6 +26,7 @@ export async function OreFreeScraper(
         try {
             await page.getByRole('button', { name: 'Continua senza accettare' }).click();
         } catch (error) { }
+        logger.info('Closed cookies panel if present');
 
         await page.getByPlaceholder('Email o numero di telefono').click();
         await page.getByPlaceholder('Email o numero di telefono').fill(username);
@@ -34,9 +35,12 @@ export async function OreFreeScraper(
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
         logger.info('Submitted login credentials ' + username + ' - ' + password);
 
-        try {
-            await page.getByRole('button', { name: 'chiudi modale' }).click();
-        } catch (error) { logger.error('No modal to close', error); }
+        for (let attempt = 0; attempt < RETRIES; attempt++) {
+          try {
+              await page.getByRole('button', { name: 'chiudi modale' }).click();
+              break;
+          } catch (error) { logger.error('No modal to close. Attempt: ' + attempt, error); }
+        }
         logger.info('Closed any modal if present');
 
         await page.getByText('Gestisci le ore free').click();
