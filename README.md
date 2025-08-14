@@ -37,8 +37,7 @@ TYPE can be:
 
 The scraper occasionally fails to scrape because of timeout in playwright. 
 There might be some funny handling in the website that I am not 
-aware of. If the CPU/ memory of the addon goes high, restart it and run the 
-custom service to fill the gaps.
+aware of. If the CPU/ memory of the addon goes high, restart it.
 
 ## MIT License
 
