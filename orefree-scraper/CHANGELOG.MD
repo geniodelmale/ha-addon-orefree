@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-28 - v0.0.26
+Fixed Docker build failure `base name ($BUILD_FROM) should not be blank`:
+- Added `build.yaml` declaring the Home Assistant base images for every supported architecture (`aarch64`, `amd64`, `armhf`, `armv7`, `i386`). Recent Supervisor versions require it for non-official addons, otherwise `BUILD_FROM` is not passed to `docker build`.
+
 ## 2026-05-28 - v0.0.25
 Fixed missing logs in Home Assistant addon "Log" tab:
 - Switched Fastify/Pino logger to `pino-pretty` transport with `sync: true` so log lines are flushed immediately when Node runs as PID 1 (`init: false`).
