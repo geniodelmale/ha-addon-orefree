@@ -25,7 +25,7 @@ But you can also update the port in the Configuration tab.
 
 ### Usage
 
-Send a GET request to http://homeassistant.local:8000?username=YOUR_USERNAME&password=YOUR_PASSWORD&type=TYPE
+Send a GET request to http://homeassistant.local:8000/fetchHours?username=YOUR_USERNAME&password=YOUR_PASSWORD&type=TYPE
 
 TYPE can be:
 - time to retrieve hours in the format 4:00 - 7:00

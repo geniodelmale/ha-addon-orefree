@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-28 - v0.0.25
+Fixed missing logs in Home Assistant addon "Log" tab:
+- Switched Fastify/Pino logger to `pino-pretty` transport with `sync: true` so log lines are flushed immediately when Node runs as PID 1 (`init: false`).
+- Human-readable log format (no colors, timestamp `yyyy-mm-dd HH:MM:ss`, `pid`/`hostname` hidden).
+- Added `SIGINT`/`SIGTERM` handlers for graceful shutdown and final log flush.
+- Added `pino-pretty` to runtime `dependencies` so it survives `npm ci --production`.
+
 ## 2025-08-12 - v0.0.14
 Added attempt when trying to close modal
 
