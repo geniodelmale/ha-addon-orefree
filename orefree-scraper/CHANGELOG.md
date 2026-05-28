@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-05-28 - v0.0.27
+Fixed changelog not shown in Home Assistant addon page: renamed `CHANGELOG.MD` to `CHANGELOG.md` (lowercase extension) because the Supervisor looks for the exact lowercase filename on a case-sensitive filesystem.
+
 ## 2026-05-28 - v0.0.26
 Fixed Docker build failure `base name ($BUILD_FROM) should not be blank`:
 - Added `build.yaml` declaring the Home Assistant base images for every supported architecture (`aarch64`, `amd64`, `armhf`, `armv7`, `i386`). Recent Supervisor versions require it for non-official addons, otherwise `BUILD_FROM` is not passed to `docker build`.
