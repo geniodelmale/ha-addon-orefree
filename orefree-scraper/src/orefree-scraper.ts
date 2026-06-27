@@ -87,12 +87,13 @@ export async function OreFreeScraper(
         logger.info('Fetched free hours: ' + jsonOreFree);
       } catch (error) {
         logger.error('Error occurred while fetching free hours: ' + error);
+        throw error;
+      } finally {
+        await browser.close();
+        logger.info('Closed browser');
       }
 
-    await browser.close();
-    logger.info('Closed browser');
-
-    return jsonOreFree;
+      return jsonOreFree;
     }
   };
 }

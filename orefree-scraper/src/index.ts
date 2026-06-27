@@ -66,7 +66,15 @@ fastify.get(
     }
 
     const scraper = await OreFreeScraper(username, password, fastify.log);
-    return scraper.fetchHours(type, inputBooleanEntity, switchEntity);
+    try {
+      return await scraper.fetchHours(type, inputBooleanEntity, switchEntity);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isAuthError = message.includes('Login error');
+      return res
+        .status(isAuthError ? 401 : 502)
+        .send({ error: message });
+    }
   },
 );
 
