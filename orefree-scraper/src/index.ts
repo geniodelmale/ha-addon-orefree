@@ -79,9 +79,11 @@ fastify.get(
         message.toLowerCase().includes('timeout') ||
         message.includes('Failed to retrieve the scraped free hours');
 
-      if (isTimeout && default_value !== undefined && default_value !== '') {
-        fastify.log.warn('Timeout occurred, returning default value: ' + default_value);
-        return default_value;
+      const fallbackValue = default_value ?? getOptions().default_value;
+
+      if (isTimeout && fallbackValue !== undefined && fallbackValue !== '') {
+        fastify.log.warn('Timeout occurred, returning default value: ' + fallbackValue);
+        return fallbackValue;
       }
 
       return res

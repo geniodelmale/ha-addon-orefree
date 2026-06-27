@@ -4,6 +4,7 @@ import fs from 'fs';
 type Config = {
   port: number;
   log_level: PinoLoggerOptions['level'];
+  default_value?: string;
 };
 
 let options: Config | undefined = undefined;

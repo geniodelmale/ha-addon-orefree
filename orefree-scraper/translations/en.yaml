@@ -7,3 +7,6 @@ configuration:
   log_level:
     name: Log Level
     description: Log level for the server
+  default_value:
+    name: Default value
+    description: Value returned instead of an error when scraping times out. Leave empty to disable. Can be overridden per request with the default_value query parameter.

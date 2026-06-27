@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-27 - v0.0.31
+Exposed `default_value` as an addon option (visible in the Configuration page), used as a fallback when the `default_value` query parameter is not provided. On a scraping timeout the configured value is returned with `200 OK` instead of an error. Added translations (en/it/ja).
+
 ## 2026-06-27 - v0.0.30
 Added an optional `default_value` query parameter to `/fetchHours`. When scraping fails due to a timeout (Playwright `TimeoutError`, a message containing "timeout", or the "Failed to retrieve the scraped free hours" failure), the endpoint now returns the provided `default_value` with `200 OK` instead of an error. Login and other errors still return `401`/`502` as before.
 

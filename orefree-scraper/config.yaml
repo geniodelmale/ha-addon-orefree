@@ -1,6 +1,6 @@
 name: OreFree Scraper
 description: Login to OreFree and scrape current hours
-version: 0.0.30
+version: 0.0.31
 slug: ore_free_scraper
 init: false
 arch:
@@ -16,6 +16,8 @@ ports:
 options:
   port: 8000
   log_level: info
+  default_value: ""
 schema:
   port: int(1001,65535)
   log_level: list(trace|debug|info|warn|error|fatal)?
+  default_value: str?

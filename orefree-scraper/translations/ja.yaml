@@ -7,3 +7,6 @@ configuration:
   log_level:
     name: ログレベル
     description: サーバーのログレベル
+  default_value:
+    name: デフォルト値
+    description: スクレイピングがタイムアウトした際にエラーの代わりに返す値。無効にするには空のままにします。リクエストごとに default_value クエリパラメータで上書きできます。
