@@ -60,7 +60,7 @@ export async function OreFreeScraper(
 
         let scrapedFreeHours = '';
         for (let attempt = 0; attempt < RETRIES; attempt++) {
-          scrapedFreeHours = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
+          scrapedFreeHours = await page.locator('div#fasciaGiornalieraBase.info-value').innerText();
           if (scrapedFreeHours.trim() !== '') {
             break;
           }

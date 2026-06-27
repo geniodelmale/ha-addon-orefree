@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-27 - v0.0.29
+Updated the scraped element selector: the daily free hours are now read from `div#fasciaGiornalieraBase.info-value` (previously `div#fasciaGiornalieraImpostata.info-value`) to match the updated OreFree page markup.
+
 ## 2026-06-27 - v0.0.28
 Fixed login errors being masked as successful responses:
 - The scraper no longer swallows errors and returns an empty `200 OK`. Errors are now rethrown after logging (browser close moved to `finally`).
