@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-27 - v0.0.28
+Fixed login errors being masked as successful responses:
+- The scraper no longer swallows errors and returns an empty `200 OK`. Errors are now rethrown after logging (browser close moved to `finally`).
+- The `/fetchHours` endpoint now returns a proper HTTP error with the corresponding message: `401` for login errors, `502` for other scraping errors. The response body is `{ "error": "<message>" }`.
+
 ## 2026-05-28 - v0.0.27
 Fixed changelog not shown in Home Assistant addon page: renamed `CHANGELOG.MD` to `CHANGELOG.md` (lowercase extension) because the Supervisor looks for the exact lowercase filename on a case-sensitive filesystem.
 
