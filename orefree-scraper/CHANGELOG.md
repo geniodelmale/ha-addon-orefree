@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-27 - v0.0.30
+Added an optional `default_value` query parameter to `/fetchHours`. When scraping fails due to a timeout (Playwright `TimeoutError`, a message containing "timeout", or the "Failed to retrieve the scraped free hours" failure), the endpoint now returns the provided `default_value` with `200 OK` instead of an error. Login and other errors still return `401`/`502` as before.
+
 ## 2026-06-27 - v0.0.29
 Updated the scraped element selector: the daily free hours are now read from `div#fasciaGiornalieraBase.info-value` (previously `div#fasciaGiornalieraImpostata.info-value`) to match the updated OreFree page markup.
 

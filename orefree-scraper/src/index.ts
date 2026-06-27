@@ -49,6 +49,7 @@ fastify.get(
           type: { type: 'string', enum: ['time', 'timeslot'] },
           input_boolean_entity: { type: 'string' },
           switch_entity: { type: 'string' },
+          default_value: { type: 'string' },
         },
         required: ['username', 'password', 'type'],
       },
@@ -56,6 +57,8 @@ fastify.get(
   },
   async (req, res) => {
     const { username, password, type } = req.query as { username: string; password: string; type: 'time' | 'timeslot'; };
+
+    const { default_value } = req.query as { default_value?: string };
 
     let inputBooleanEntity = '';
     let switchEntity = '';
@@ -71,6 +74,16 @@ fastify.get(
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const isAuthError = message.includes('Login error');
+      const isTimeout =
+        (error instanceof Error && error.name === 'TimeoutError') ||
+        message.toLowerCase().includes('timeout') ||
+        message.includes('Failed to retrieve the scraped free hours');
+
+      if (isTimeout && default_value !== undefined && default_value !== '') {
+        fastify.log.warn('Timeout occurred, returning default value: ' + default_value);
+        return default_value;
+      }
+
       return res
         .status(isAuthError ? 401 : 502)
         .send({ error: message });
