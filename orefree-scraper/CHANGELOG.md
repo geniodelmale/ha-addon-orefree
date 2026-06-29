@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-29 - v0.0.32
+Updated the navigation link text to match the OreFree page markup: the "Manage Free Hours" link is now matched as `GESTISCI LE ORE FREE` (uppercase) instead of `Gestisci le ore free`.
+
 ## 2026-06-27 - v0.0.31
 Exposed `default_value` as an addon option (visible in the Configuration page), used as a fallback when the `default_value` query parameter is not provided. On a scraping timeout the configured value is returned with `200 OK` instead of an error. Added translations (en/it/ja).
 

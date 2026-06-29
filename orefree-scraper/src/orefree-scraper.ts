@@ -53,7 +53,7 @@ export async function OreFreeScraper(
 
         logger.info('Closed any modal if present');
 
-        await page.getByText('Gestisci le ore free').click();
+        await page.getByText('GESTISCI LE ORE FREE').click();
         logger.info('Navigated to Manage Free Hours');
 
         await page.waitForTimeout(3000);
