@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-29 - v0.0.38
+Fixed the scraper getting stuck after a successful login. A cross-selling promo modal (`#crossSellingTarget`) pops up a few seconds after the dashboard loads and intercepts pointer events, blocking the click on "Gestisci le ore free" (which timed out). A Playwright `addLocatorHandler` is now registered so the modal is automatically closed (via its `.close` control) whenever it appears during an action, allowing the navigation to proceed. Verified end-to-end: login succeeds, modal is dismissed, and the free-hours value is read correctly.
+
 ## 2026-06-29 - v0.0.37
 Fixed login failing because of a percent-encoded username. Home Assistant passes the username URL-encoded (the leading `+` of the phone number arrives as `%2B`), and the literal `%2B393...` was being typed into the login field, so Enel rejected the credentials and the page stayed on the SSO login (causing the later timeout). Username and password are now URL-decoded with a safe `decodeURIComponent` (idempotent: a real `+` is left untouched, and on malformed input it falls back to the original value) before filling the form. Verified end-to-end: with `%2B393316372674` the field now receives `+393316372674` and login succeeds.
 

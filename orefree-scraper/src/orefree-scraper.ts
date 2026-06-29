@@ -110,6 +110,15 @@ export async function OreFreeScraper(
 
         await page.waitForTimeout(3000);
 
+        // A cross-selling promo modal (#crossSellingTarget) pops up a few seconds
+        // after the dashboard loads and intercepts pointer events, blocking the
+        // "Gestisci le ore free" click. Register a handler so Playwright auto
+        // closes it whenever it appears during a subsequent action.
+        await page.addLocatorHandler(page.locator('#crossSellingTarget'), async () => {
+          logger.info('Cross-selling modal detected, closing it');
+          await page.locator('#crossSellingTarget .close').first().click().catch(() => {});
+        });
+
         for (let attempt = 0; attempt < 1; attempt++) {
           try {
               await page.getByRole('button', { name: 'chiudi modale' }).click();
