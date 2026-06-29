@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-29 - v0.0.37
+Fixed login failing because of a percent-encoded username. Home Assistant passes the username URL-encoded (the leading `+` of the phone number arrives as `%2B`), and the literal `%2B393...` was being typed into the login field, so Enel rejected the credentials and the page stayed on the SSO login (causing the later timeout). Username and password are now URL-decoded with a safe `decodeURIComponent` (idempotent: a real `+` is left untouched, and on malformed input it falls back to the original value) before filling the form. Verified end-to-end: with `%2B393316372674` the field now receives `+393316372674` and login succeeds.
+
 ## 2026-06-29 - v0.0.36
 Added detailed login diagnostics. The reported timeout on `getByText('Gestisci le ore free')` happens because the page is **still on the SSO login page** (login did not complete). Now the scraper detects this explicitly instead of failing later on the link:
 - Logs the URL before submit and whether a reCAPTCHA frame is present.

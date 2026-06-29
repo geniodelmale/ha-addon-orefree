@@ -2,6 +2,19 @@ import playwright from 'playwright';
 import { RETRIES, URL_TOP_PAGE } from './constant';
 import { Logger, Usage } from './types';
 
+// URL-decode a credential coming from the query string. Home Assistant passes
+// the username percent-encoded (e.g. a leading "+" becomes "%2B"); the login
+// form needs the decoded value ("+39..."). decodeURIComponent is idempotent for
+// already-decoded values (it leaves a literal "+" untouched) and we fall back to
+// the original string if decoding fails (e.g. a lone "%" in a password).
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export async function OreFreeScraper(
   username: string,
   password: string,
@@ -47,9 +60,12 @@ export async function OreFreeScraper(
         // New Enel login page (SSO): stable element ids are more robust than
         // placeholders/labels.
         logger.info('Login page URL before submit: ' + page.url());
+        const decodedUsername = safeDecode(username);
+        const decodedPassword = safeDecode(password);
+        logger.info('Login username (decoded): ' + decodedUsername);
         await page.locator('#txtLoginUsername').waitFor({ state: 'visible', timeout: 15000 });
-        await page.locator('#txtLoginUsername').fill(username);
-        await page.locator('#txtLoginPassword').fill(password);
+        await page.locator('#txtLoginUsername').fill(decodedUsername);
+        await page.locator('#txtLoginPassword').fill(decodedPassword);
         const recaptchaBeforeSubmit = page.frames().some((f) => /recaptcha/i.test(f.url()));
         logger.info('reCAPTCHA frame present before submit: ' + recaptchaBeforeSubmit);
         await page.locator('#login-btn').click();
