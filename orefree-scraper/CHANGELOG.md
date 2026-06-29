@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-06-29 - v0.0.33
+Added a 3-second wait after a successful login (before handling the modal/navigation) to give the OreFree page time to fully load, improving scraping reliability.
+
 ## 2026-06-29 - v0.0.32
 Updated the navigation link text to match the OreFree page markup: the "Manage Free Hours" link is now matched as `GESTISCI LE ORE FREE` (uppercase) instead of `Gestisci le ore free`.
 

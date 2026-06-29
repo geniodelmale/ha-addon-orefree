@@ -43,6 +43,8 @@ export async function OreFreeScraper(
           throw new Error('Login error detected.');
         }
 
+        await page.waitForTimeout(3000);
+
         for (let attempt = 0; attempt < 1; attempt++) {
           try {
               await page.getByRole('button', { name: 'chiudi modale' }).click();
