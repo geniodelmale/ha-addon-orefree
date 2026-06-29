@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 - v0.0.35
+Fixed the `/fetchHours` timeout, root-caused by reproducing the full flow with Playwright against the live Enel site:
+- **Cookie overlay**: the TrustArc consent banner (`#trustarc-banner-overlay` / `#consent_blackbar`) stays on top of the page and intercepts pointer events, blocking the login button and the "Gestisci le ore free" link. Cookie dismissal is now reliable: wait for `#truste-consent-required`, click it, then wait for the overlay to become hidden before continuing.
+- **New SSO login page**: the residential area now redirects to the Enel SSO login. Login fields are filled via stable ids `#txtLoginUsername` / `#txtLoginPassword` and submitted with `#login-btn` instead of placeholder/role locators.
+- **"Gestisci le ore free" link**: reverted the broken `getByRole('link', ...)` locator introduced in v0.0.34. That anchor has no `href`, so it is not exposed with the `link` role and the locator never matched (timeout). It is matched by text again: `getByText('Gestisci le ore free', { exact: true })`.
+
 ## 2026-06-29 - v0.0.34
 Reliability and diagnostics for the "Manage Free Hours" navigation:
 - Replaced the brittle `getByText('GESTISCI LE ORE FREE')` locator with a case-insensitive role-based locator `getByRole('link', { name: /gestisci le ore free/i })`. The on-screen uppercase label comes from CSS `text-transform`; the actual DOM text is `Gestisci le ore free`. (The previous uppercase change in v0.0.32 had no functional effect since `getByText` is case-insensitive by default.)

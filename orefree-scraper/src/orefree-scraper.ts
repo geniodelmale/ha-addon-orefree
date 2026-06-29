@@ -23,16 +23,33 @@ export async function OreFreeScraper(
         await page.goto(URL_TOP_PAGE);
         logger.info('Navigated to Enel residential area');
 
+        // Dismiss the TrustArc cookie consent banner. Its overlay
+        // (#trustarc-banner-overlay / #consent_blackbar) intercepts pointer
+        // events, so we must wait for it to actually disappear before
+        // interacting with the login form, otherwise clicks time out.
         try {
-            await page.getByRole('button', { name: 'Continua senza accettare' }).click();
-        } catch (error) { }
-        logger.info('Closed cookies panel if present');
+          const cookieButton = page.locator('#truste-consent-required');
+          await cookieButton.waitFor({ state: 'visible', timeout: 10000 });
+          await cookieButton.click();
+          logger.info('Cookie consent banner dismissed');
+        } catch (error) {
+          logger.info('Cookie consent banner not shown');
+        }
+        try {
+          await page
+            .locator('#consent_blackbar, #trustarc-banner-overlay')
+            .first()
+            .waitFor({ state: 'hidden', timeout: 8000 });
+        } catch (error) {
+          logger.info('Cookie overlay still present, continuing');
+        }
 
-        await page.getByPlaceholder('Email o numero di telefono').click();
-        await page.getByPlaceholder('Email o numero di telefono').fill(username);
-        await page.getByPlaceholder('Password').click();
-        await page.getByPlaceholder('Password').fill(password);
-        await page.getByRole('button', { name: 'Accedi', exact: true }).click();
+        // New Enel login page (SSO): stable element ids are more robust than
+        // placeholders/labels.
+        await page.locator('#txtLoginUsername').waitFor({ state: 'visible', timeout: 15000 });
+        await page.locator('#txtLoginUsername').fill(username);
+        await page.locator('#txtLoginPassword').fill(password);
+        await page.locator('#login-btn').click();
         logger.info('Submitted login credentials for ' + username);
 
         await page.waitForURL('**/*');
@@ -56,9 +73,9 @@ export async function OreFreeScraper(
         logger.info('Closed any modal if present');
 
         // The link label is rendered uppercase via CSS but the DOM text is
-        // "Gestisci le ore free". Use a case-insensitive role-based locator so
-        // it keeps matching regardless of casing/markup changes.
-        await page.getByRole('link', { name: /gestisci le ore free/i }).click();
+        // "Gestisci le ore free". The anchor has no href, so it is NOT exposed
+        // as a "link" role; match it by text instead (getByRole('link') fails).
+        await page.getByText('Gestisci le ore free', { exact: true }).click();
         logger.info('Navigated to Manage Free Hours');
 
         await page.waitForTimeout(3000);
