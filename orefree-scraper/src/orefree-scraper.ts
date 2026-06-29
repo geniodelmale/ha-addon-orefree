@@ -46,18 +46,50 @@ export async function OreFreeScraper(
 
         // New Enel login page (SSO): stable element ids are more robust than
         // placeholders/labels.
+        logger.info('Login page URL before submit: ' + page.url());
         await page.locator('#txtLoginUsername').waitFor({ state: 'visible', timeout: 15000 });
         await page.locator('#txtLoginUsername').fill(username);
         await page.locator('#txtLoginPassword').fill(password);
+        const recaptchaBeforeSubmit = page.frames().some((f) => /recaptcha/i.test(f.url()));
+        logger.info('reCAPTCHA frame present before submit: ' + recaptchaBeforeSubmit);
         await page.locator('#login-btn').click();
         logger.info('Submitted login credentials for ' + username);
 
-        await page.waitForURL('**/*');
+        // Wait until we leave the SSO login page. If we stay, login failed
+        // (wrong credentials, captcha challenge, or Enel system error).
+        const isLoginPage = (u: string) => /\/login\b|samlsso/i.test(u);
+        try {
+          await page.waitForURL((u) => !isLoginPage(u.toString()), { timeout: 20000 });
+          logger.info('Login successful, landed on: ' + page.url());
+        } catch (waitError) {
+          logger.error('Login did NOT complete - still on login page: ' + page.url());
 
-        const currentUrl = page.url();
-        if (currentUrl.includes('autherror=true')) {
-          logger.error('Login error detected.');
-          throw new Error('Login error detected.');
+          const messages = await page
+            .locator('[role="alert"], .error, [class*="error"], p, span')
+            .filter({
+              hasText:
+                /(credenzial|non corret|non valid|errat|errore|riprova|non disponibil|captcha|verifica|bloccat|troppi)/i,
+            })
+            .evaluateAll((els) =>
+              Array.from(
+                new Set(
+                  els
+                    .filter((el) => (el as HTMLElement).offsetParent !== null)
+                    .map((el) => (el.textContent || '').replace(/\s+/g, ' ').trim())
+                    .filter((t) => t.length > 0 && t.length < 160),
+                ),
+              ),
+            )
+            .catch(() => [] as string[]);
+          logger.error('Login page messages: ' + JSON.stringify(messages));
+
+          const hasRecaptcha = page.frames().some((f) => /recaptcha/i.test(f.url()));
+          logger.error('reCAPTCHA challenge still present: ' + hasRecaptcha);
+
+          throw new Error(
+            'Login did not complete (still on SSO login page). Messages: ' +
+              JSON.stringify(messages),
+          );
         }
 
         await page.waitForTimeout(3000);

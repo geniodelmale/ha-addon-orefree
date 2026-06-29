@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-29 - v0.0.36
+Added detailed login diagnostics. The reported timeout on `getByText('Gestisci le ore free')` happens because the page is **still on the SSO login page** (login did not complete). Now the scraper detects this explicitly instead of failing later on the link:
+- Logs the URL before submit and whether a reCAPTCHA frame is present.
+- After submit, waits for the page to leave the login/SSO URL. If it stays, it logs the actual visible login-page message (e.g. "Le credenziali che hai fornito non sono corrette." or "Al momento i sistemi risultano momentaneamente non disponibili"), whether reCAPTCHA is still present, and throws a clear `Login did not complete` error including those messages.
+
 ## 2026-06-29 - v0.0.35
 Fixed the `/fetchHours` timeout, root-caused by reproducing the full flow with Playwright against the live Enel site:
 - **Cookie overlay**: the TrustArc consent banner (`#trustarc-banner-overlay` / `#consent_blackbar`) stays on top of the page and intercepts pointer events, blocking the login button and the "Gestisci le ore free" link. Cookie dismissal is now reliable: wait for `#truste-consent-required`, click it, then wait for the overlay to become hidden before continuing.
