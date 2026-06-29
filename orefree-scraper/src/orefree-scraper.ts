@@ -33,7 +33,7 @@ export async function OreFreeScraper(
         await page.getByPlaceholder('Password').click();
         await page.getByPlaceholder('Password').fill(password);
         await page.getByRole('button', { name: 'Accedi', exact: true }).click();
-        logger.info('Submitted login credentials ' + username + ' - ' + password);
+        logger.info('Submitted login credentials for ' + username);
 
         await page.waitForURL('**/*');
 
@@ -55,7 +55,10 @@ export async function OreFreeScraper(
 
         logger.info('Closed any modal if present');
 
-        await page.getByText('GESTISCI LE ORE FREE').click();
+        // The link label is rendered uppercase via CSS but the DOM text is
+        // "Gestisci le ore free". Use a case-insensitive role-based locator so
+        // it keeps matching regardless of casing/markup changes.
+        await page.getByRole('link', { name: /gestisci le ore free/i }).click();
         logger.info('Navigated to Manage Free Hours');
 
         await page.waitForTimeout(3000);
@@ -89,6 +92,13 @@ export async function OreFreeScraper(
         logger.info('Fetched free hours: ' + jsonOreFree);
       } catch (error) {
         logger.error('Error occurred while fetching free hours: ' + error);
+        try {
+          logger.error('Diagnostic - current URL: ' + page.url() + ' - title: ' + (await page.title()));
+          await page.screenshot({ path: '/data/orefree-error.png', fullPage: true });
+          logger.error('Diagnostic - saved screenshot to /data/orefree-error.png');
+        } catch (diagError) {
+          logger.error('Failed to capture diagnostics: ' + diagError);
+        }
         throw error;
       } finally {
         await browser.close();

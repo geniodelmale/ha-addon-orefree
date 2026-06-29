@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 - v0.0.34
+Reliability and diagnostics for the "Manage Free Hours" navigation:
+- Replaced the brittle `getByText('GESTISCI LE ORE FREE')` locator with a case-insensitive role-based locator `getByRole('link', { name: /gestisci le ore free/i })`. The on-screen uppercase label comes from CSS `text-transform`; the actual DOM text is `Gestisci le ore free`. (The previous uppercase change in v0.0.32 had no functional effect since `getByText` is case-insensitive by default.)
+- On any scraping error, the endpoint now logs the current URL and page title and saves a full-page screenshot to `/data/orefree-error.png` to help diagnose login/flow failures in the real environment.
+- Security: stopped logging the password in plaintext on login (the log line now only reports the username).
+
 ## 2026-06-29 - v0.0.33
 Added a 3-second wait after a successful login (before handling the modal/navigation) to give the OreFree page time to fully load, improving scraping reliability.
 
