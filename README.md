@@ -41,7 +41,7 @@ aware of. If the CPU/ memory of the addon goes high, restart it.
 
 ## MIT License
 
-Copyright (c) 2025 Lorenzo Barbieri
+Copyright (c) 2025-2026 Lorenzo Barbieri
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
