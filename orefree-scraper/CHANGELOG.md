@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-10-11 - v0.0.39
+Fixed the scraped hours source: the scraper now reads the configured daily time band from `div#fasciaGiornalieraImpostata.info-value`, rather than the base time band (`div#fasciaGiornalieraBase.info-value`). This returns the actual free-hours window configured for the current day.
+
 ## 2026-06-29 - v0.0.38
 Fixed the scraper getting stuck after a successful login. A cross-selling promo modal (`#crossSellingTarget`) pops up a few seconds after the dashboard loads and intercepts pointer events, blocking the click on "Gestisci le ore free" (which timed out). A Playwright `addLocatorHandler` is now registered so the modal is automatically closed (via its `.close` control) whenever it appears during an action, allowing the navigation to proceed. Verified end-to-end: login succeeds, modal is dismissed, and the free-hours value is read correctly.
 
