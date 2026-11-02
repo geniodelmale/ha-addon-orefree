@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const playwright = require('playwright');
 const Fastify = require('fastify');
-const { getDays, formatDays } = require('../src/hours');
+const { getDays } = require('../src/hours');
 const { registerHoursRoute } = require('../src/hours-route');
 
 test('real browser fixture verifies full scraper/API, fallback and browser cleanup', async (t) => {
@@ -78,9 +78,9 @@ test('real browser fixture verifies full scraper/API, fallback and browser clean
         assert.match(http.headers.get('content-type'), /^text\/plain/);
       }
       if (scenario === 'timetomorrow') {
-        assert.equal(response.body, formatDays(days, '00:00 - 24:00', '10:00 - 13:00'), diagnostics.join('\n'));
+        assert.equal(response.body, '00:00 - 24:00\n10:00 - 13:00', diagnostics.join('\n'));
       } else if (scenario === 'timeout') {
-        assert.equal(response.body, formatDays(days, '04:00 - 07:00', '04:00 - 07:00'));
+        assert.equal(response.body, '04:00 - 07:00\n04:00 - 07:00');
       } else if (scenario === 'time') {
         assert.equal(response.body, '00:01 - 23:59');
       } else if (scenario === 'timeslot') {

@@ -29,7 +29,7 @@ Send a GET request to http://homeassistant.local:8000/fetchHours?username=YOUR_U
 
 TYPE can be:
 - time to retrieve hours in the format 4:00 - 7:00
-- timetomorrow to retrieve today and tomorrow as two dated text lines (see below)
+- timetomorrow to retrieve today and tomorrow as two hours-only text lines (see below)
 - timeslot to retrieve json data:
     { "timeslots":[{ "start": "4:00", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "7:00", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}
 
@@ -38,17 +38,17 @@ TYPE can be:
 Use `type=timetomorrow` on `/fetchHours`, with the same `username` and `password` parameters. No additional option or Home Assistant entity IDs are required. The response is `text/plain`, for example:
 
 ```text
-2026-11-02: 04:00 - 07:00
-2026-11-03: 10:00 - 13:00
+04:00 - 07:00
+10:00 - 13:00
 ```
 
-Dates use `Europe/Rome`; hours are normalized to `HH:mm - HH:mm`. Unlike the existing `time` output, this mode preserves `00:00` and `24:00`. The daily card is read without modifying the configured band. `time` and `timeslot` remain unchanged.
+The first line is today and the second is tomorrow, determined using `Europe/Rome`. Dates are not included in the response; each line is `HH:mm - HH:mm`. Unlike the existing `time` output, this mode preserves `00:00` and `24:00`. The daily card is read without modifying the configured band. `time` and `timeslot` remain unchanged.
 
 On the same timeout failures covered by `time`, pass a single fallback band with `default_value=04%3A00%20-%2007%3A00`, or configure `default_value` in the add-on. Both lines then use that band:
 
 ```text
-2026-11-02: 04:00 - 07:00
-2026-11-03: 04:00 - 07:00
+04:00 - 07:00
+04:00 - 07:00
 ```
 
 Fallback returns HTTP 200 and logs a warning: these hours are supplied defaults, not verified Enel availability. It replaces both lines even if today's hours were already read. The query value overrides configuration; `default_value=` disables fallback for that request. For `timetomorrow`, the fallback must be one valid band, not two lines.

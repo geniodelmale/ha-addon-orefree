@@ -1,7 +1,7 @@
 import playwright from 'playwright';
 import { RETRIES, URL_TOP_PAGE } from './constant';
 import { HoursType, Logger } from './types';
-import { formatDays, getDays, readTomorrowHours } from './hours';
+import { formatHours, getDays, readTomorrowHours } from './hours';
 
 // URL-decode a credential coming from the query string. Home Assistant passes
 // the username percent-encoded (e.g. a leading "+" becomes "%2B"); the login
@@ -163,7 +163,7 @@ export async function OreFreeScraper(
           if (getDays().today !== days.today) {
             throw new Error('Calendar day changed while reading free hours');
           }
-          jsonOreFree = formatDays(days, scrapedFreeHours, tomorrowHours);
+          jsonOreFree = formatHours(scrapedFreeHours, tomorrowHours);
         } else {
           const words = scrapedFreeHours.split(' ');
           let startTime = words[0]; //.replace('24:00', '00:01');

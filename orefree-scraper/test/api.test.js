@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const Fastify = require('fastify');
 const { registerHoursRoute } = require('../src/hours-route');
 
-const expectedFallback = '2026-11-02: 04:00 - 07:00\n2026-11-03: 04:00 - 07:00';
+const expectedFallback = '04:00 - 07:00\n04:00 - 07:00';
 
 async function request(t, query, { result, error, configured } = {}) {
   const app = Fastify();
@@ -18,7 +18,7 @@ async function request(t, query, { result, error, configured } = {}) {
       if (error) throw error;
       return result ?? `${type}|${boolean}|${entity}`;
     },
-  }), () => new Date('2026-11-02T12:00:00Z'));
+  }));
   t.after(() => app.close());
   const response = await app.inject({
     method: 'GET', url: '/fetchHours',
@@ -28,7 +28,7 @@ async function request(t, query, { result, error, configured } = {}) {
 }
 
 test('timetomorrow returns two text lines without Home Assistant entities', async (t) => {
-  const text = '2026-11-02: 04:00 - 07:00\n2026-11-03: 10:00 - 13:00';
+  const text = '04:00 - 07:00\n10:00 - 13:00';
   const { response, calls } = await request(t, { type: 'timetomorrow' }, { result: text });
   assert.equal(response.statusCode, 200);
   assert.match(response.headers['content-type'], /^text\/plain/);
@@ -50,7 +50,7 @@ test('validates type before scraping and preserves legacy entity arguments', asy
   }
 });
 
-test('all existing timeout categories use one band for both dates with a warning', async (t) => {
+test('all existing timeout categories use one band on both lines without dates with a warning', async (t) => {
   for (const error of [
     Object.assign(new Error('waiting for page'), { name: 'TimeoutError' }),
     new Error('operation timeout'),

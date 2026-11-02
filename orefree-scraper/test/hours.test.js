@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { getDays, normalizeHours, formatDays, findTomorrowHours, readTomorrowHours } = require('../src/hours');
+const { getDays, normalizeHours, formatHours, findTomorrowHours, readTomorrowHours } = require('../src/hours');
 
 const card = {
   date: '3 Novembre',
@@ -12,8 +12,10 @@ test('reads tomorrow by complete date, accepts identical copies and formats two 
   const other = { ...card, date: '4 Novembre', handlers: ["updatefascia('10:00 - 13:00','20261104')"] };
   const days = getDays(new Date('2026-11-02T12:00:00Z'));
   assert.equal(findTomorrowHours([other, card, card], days.tomorrow), '10:00 - 13:00');
-  assert.equal(formatDays(days, '4:00 - 7:00', findTomorrowHours([card], days.tomorrow)),
-    '2026-11-02: 04:00 - 07:00\n2026-11-03: 10:00 - 13:00');
+  const output = formatHours('4:00 - 7:00', findTomorrowHours([card], days.tomorrow));
+  assert.equal(output, '04:00 - 07:00\n10:00 - 13:00');
+  assert.equal(output.split('\n').length, 2);
+  for (const line of output.split('\n')) assert.match(line, /^\d{2}:\d{2} - \d{2}:\d{2}$/);
   assert.equal(findTomorrowHours([card], '2027-11-03'), undefined);
 });
 

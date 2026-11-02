@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { OreFreeScraper } from './orefree-scraper';
 import { HoursType } from './types';
-import { formatDays, getDays } from './hours';
+import { formatHours } from './hours';
 
 type HoursQuery = {
   username: string;
@@ -16,7 +16,6 @@ export function registerHoursRoute(
   fastify: FastifyInstance,
   getDefaultValue: () => string | undefined,
   createScraper: typeof OreFreeScraper = OreFreeScraper,
-  now: () => Date = () => new Date(),
 ): void {
   fastify.get<{ Querystring: HoursQuery }>(
     '/fetchHours',
@@ -61,7 +60,7 @@ export function registerHoursRoute(
           if (type === 'timetomorrow') {
             let fallback: string;
             try {
-              fallback = formatDays(getDays(now()), fallbackValue, fallbackValue);
+              fallback = formatHours(fallbackValue, fallbackValue);
             } catch (fallbackError) {
               const detail = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
               fastify.log.error('Invalid timetomorrow default_value: ' + detail);

@@ -39,8 +39,8 @@ export function normalizeHours(value: string): string {
   return `${match[1].padStart(2, '0')}:${match[2]} - ${match[3].padStart(2, '0')}:${match[4]}`;
 }
 
-export function formatDays(days: Days, todayHours: string, tomorrowHours: string): string {
-  return `${days.today}: ${normalizeHours(todayHours)}\n${days.tomorrow}: ${normalizeHours(tomorrowHours)}`;
+export function formatHours(todayHours: string, tomorrowHours: string): string {
+  return `${normalizeHours(todayHours)}\n${normalizeHours(tomorrowHours)}`;
 }
 
 export function findTomorrowHours(cards: DailyCard[], tomorrow: string): string | undefined {

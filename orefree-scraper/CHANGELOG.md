@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-02 - v0.0.41
+Changed `type=timetomorrow` to return only two `HH:mm - HH:mm` lines without dates: today first, tomorrow second. The single-band fallback uses the same hours-only format on both lines. Date selection and validation still use `Europe/Rome`; `time` and `timeslot` remain unchanged.
+
 ## 2026-11-02 - v0.0.40
 Added `type=timetomorrow` to return today and tomorrow together as two dated text lines in `Europe/Rome`. Tomorrow is read from the daily card's `data-info-orefree`, identified by the complete date in the `updatefascia` handler without executing it or clicking "MODIFICA". The existing `time` and `timeslot` outputs are unchanged.
 
