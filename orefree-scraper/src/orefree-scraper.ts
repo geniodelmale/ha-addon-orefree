@@ -1,6 +1,7 @@
 import playwright from 'playwright';
 import { RETRIES, URL_TOP_PAGE } from './constant';
-import { Logger, Usage } from './types';
+import { HoursType, Logger } from './types';
+import { formatDays, getDays, readTomorrowHours } from './hours';
 
 // URL-decode a credential coming from the query string. Home Assistant passes
 // the username percent-encoded (e.g. a leading "+" becomes "%2B"); the login
@@ -30,7 +31,7 @@ export async function OreFreeScraper(
 
 
   return {
-    async fetchHours(type: 'time' | 'timeslot', inputBooleanEntity: string, switchEntity: string) {
+    async fetchHours(type: HoursType, inputBooleanEntity?: string, switchEntity?: string) {
       var jsonOreFree = '';
       try {
         await page.goto(URL_TOP_PAGE);
@@ -137,6 +138,7 @@ export async function OreFreeScraper(
 
         await page.waitForTimeout(3000);
 
+        const days = type === 'timetomorrow' ? getDays() : undefined;
         let scrapedFreeHours = '';
         for (let attempt = 0; attempt < RETRIES; attempt++) {
           scrapedFreeHours = await page.locator('div#fasciaGiornalieraImpostata.info-value').innerText();
@@ -156,6 +158,12 @@ export async function OreFreeScraper(
         if (type === 'time') {
           jsonOreFree=scrapedFreeHours.replace('24:00', '23:59').replace('00:00', '00:01');
           //jsonOreFree='21:00 - 23:59';
+        } else if (type === 'timetomorrow' && days) {
+          const tomorrowHours = await readTomorrowHours(page, days.tomorrow);
+          if (getDays().today !== days.today) {
+            throw new Error('Calendar day changed while reading free hours');
+          }
+          jsonOreFree = formatDays(days, scrapedFreeHours, tomorrowHours);
         } else {
           const words = scrapedFreeHours.split(' ');
           let startTime = words[0]; //.replace('24:00', '00:01');

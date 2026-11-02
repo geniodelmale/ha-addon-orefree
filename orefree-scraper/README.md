@@ -29,8 +29,37 @@ Send a GET request to http://homeassistant.local:8000/fetchHours?username=YOUR_U
 
 TYPE can be:
 - time to retrieve hours in the format 4:00 - 7:00
+- timetomorrow to retrieve today and tomorrow as two dated text lines (see below)
 - timeslot to retrieve json data:
     { "timeslots":[{ "start": "4:00", "actions": [{ "service": "input_boolean.turn_on", "entity_id": "input_boolean.orefree" }] }, { "start": "7:00", "actions": [{ "service": "input_boolean.turn_off", "entity_id": "input_boolean.orefree" }] }], "entity_id": "switch.schedule_b6fc42"}
+
+#### Today and tomorrow
+
+Use `type=timetomorrow` on `/fetchHours`, with the same `username` and `password` parameters. No additional option or Home Assistant entity IDs are required. The response is `text/plain`, for example:
+
+```text
+2026-11-02: 04:00 - 07:00
+2026-11-03: 10:00 - 13:00
+```
+
+Dates use `Europe/Rome`; hours are normalized to `HH:mm - HH:mm`. Unlike the existing `time` output, this mode preserves `00:00` and `24:00`. The daily card is read without modifying the configured band. `time` and `timeslot` remain unchanged.
+
+On the same timeout failures covered by `time`, pass a single fallback band with `default_value=04%3A00%20-%2007%3A00`, or configure `default_value` in the add-on. Both lines then use that band:
+
+```text
+2026-11-02: 04:00 - 07:00
+2026-11-03: 04:00 - 07:00
+```
+
+Fallback returns HTTP 200 and logs a warning: these hours are supplied defaults, not verified Enel availability. It replaces both lines even if today's hours were already read. The query value overrides configuration; `default_value=` disables fallback for that request. For `timetomorrow`, the fallback must be one valid band, not two lines.
+
+Login errors return HTTP 401; missing published tomorrow hours, inconsistent data, invalid fallback and other uncovered scraping failures return HTTP 502. Missing or invalid `type` returns HTTP 400.
+
+#### Development checks
+
+Run `npm test` for the API and parsing regression tests and `npx tsc --noEmit` for type checking.
+On Windows, use `npm --ignore-scripts run build` to run the same TypeScript build without the Linux-only `rm` prebuild command.
+To check the full scraper against a local HTML fixture, set `OREFREE_TEST_BROWSER` to an installed Chromium/Chrome/Edge executable and run `node --require ts-node/register --test test/browser-check.js`. This does not log in to Enel or modify any real bands.
 
 ## Known Issues
 

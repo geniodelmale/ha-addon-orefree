@@ -9,4 +9,4 @@ configuration:
     description: サーバーのログレベル
   default_value:
     name: デフォルト値
-    description: スクレイピングがタイムアウトした際にエラーの代わりに返す値。無効にするには空のままにします。リクエストごとに default_value クエリパラメータで上書きできます。
+    description: スクレイピングがタイムアウトした際にエラーの代わりに返す値。timetomorrow では、単一の時間帯 HH:mm - HH:mm を今日と明日の両方に使用します。無効にするには空のままにします。リクエストごとに default_value クエリパラメータで上書きできます。

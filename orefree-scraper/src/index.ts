@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import Fastify from 'fastify';
-import { OreFreeScraper } from './orefree-scraper';
+import { registerHoursRoute } from './hours-route';
 import { getOptions } from './config';
 
 dayjs.extend(timezone);
@@ -37,61 +37,7 @@ fastify.get('/', async (req, res) => {
   return { message: 'OreFree Scraper is running!' };
 });
 
-fastify.get(
-  '/fetchHours',
-  {
-    schema: {
-      querystring: {
-        type: 'object',
-        properties: {
-          username: { type: 'string' },
-          password: { type: 'string' },
-          type: { type: 'string', enum: ['time', 'timeslot'] },
-          input_boolean_entity: { type: 'string' },
-          switch_entity: { type: 'string' },
-          default_value: { type: 'string' },
-        },
-        required: ['username', 'password', 'type'],
-      },
-    },
-  },
-  async (req, res) => {
-    const { username, password, type } = req.query as { username: string; password: string; type: 'time' | 'timeslot'; };
-
-    const { default_value } = req.query as { default_value?: string };
-
-    let inputBooleanEntity = '';
-    let switchEntity = '';
-    if (type === 'timeslot') {
-      const { input_boolean_entity, switch_entity } = req.query as { input_boolean_entity: string; switch_entity: string; };
-      inputBooleanEntity = input_boolean_entity;
-      switchEntity = switch_entity;
-    }
-
-    const scraper = await OreFreeScraper(username, password, fastify.log);
-    try {
-      return await scraper.fetchHours(type, inputBooleanEntity, switchEntity);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      const isAuthError = message.includes('Login error');
-      const isTimeout =
-        (error instanceof Error && error.name === 'TimeoutError') ||
-        message.toLowerCase().includes('timeout') ||
-        message.includes('Failed to retrieve the scraped free hours');
-
-      const fallbackValue = default_value ?? getOptions().default_value;
-
-      if (isTimeout && fallbackValue !== undefined && fallbackValue !== '') {
-        fastify.log.warn('Timeout occurred, returning default value: ' + fallbackValue);
-        return fallbackValue;
-      }
-
-      return res
-        .status(isAuthError ? 401 : 502)
-        .send({ error: message });
-    }
-  },
-);
+registerHoursRoute(fastify, () => getOptions().default_value);
 
 fastify.listen({ host: '0.0.0.0', port: getOptions().port ?? 8000 })
   .catch(err => {

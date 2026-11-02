@@ -9,4 +9,4 @@ configuration:
     description: Log level for the server
   default_value:
     name: Default value
-    description: Value returned instead of an error when scraping times out. Leave empty to disable. Can be overridden per request with the default_value query parameter.
+    description: Value returned instead of an error when scraping times out. For timetomorrow, one HH:mm - HH:mm band is used for both today and tomorrow. Leave empty to disable. Can be overridden per request with the default_value query parameter.

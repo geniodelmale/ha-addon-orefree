@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-02 - v0.0.40
+Added `type=timetomorrow` to return today and tomorrow together as two dated text lines in `Europe/Rome`. Tomorrow is read from the daily card's `data-info-orefree`, identified by the complete date in the `updatefascia` handler without executing it or clicking "MODIFICA". The existing `time` and `timeslot` outputs are unchanged.
+
+For the same timeout failures covered by `time`, `default_value` supplies one valid time band for both dated lines, with a warning in the logs. The query overrides the add-on configuration; an empty query value disables fallback. Login errors, inconsistent data and an explicitly missing tomorrow card remain errors. Midnight boundaries (`00:00`, `24:00`) are preserved in the new output.
+
+Added API/date/parser regression tests and a local Chromium fixture check covering the full scraper flow, fallback, day rollover and browser cleanup. Live authenticated Enel validation was not performed.
+
 ## 2026-10-11 - v0.0.39
 Fixed the scraped hours source: the scraper now reads the configured daily time band from `div#fasciaGiornalieraImpostata.info-value`, rather than the base time band (`div#fasciaGiornalieraBase.info-value`). This returns the actual free-hours window configured for the current day.
 
